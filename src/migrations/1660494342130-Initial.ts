@@ -1,0 +1,128 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class Initial1660494342130 implements MigrationInterface {
+    name = 'Initial1660494342130'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "username" character varying NOT NULL, "email" character varying NOT NULL, "password" character varying NOT NULL, "skills" text, "avatar" character varying, "coverPhoto" character varying, "fullName" character varying, "headline" character varying, "address" character varying, "about" character varying, "mostRecentLatitude" double precision, "mostRecentLongitude" double precision, CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"), CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "post" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "title" character varying NOT NULL, "text" character varying NOT NULL, "creatorType" character varying NOT NULL DEFAULT 'user', "creatorId" integer, "pageCreatorId" integer, "points" integer NOT NULL DEFAULT '0', "spaceId" integer NOT NULL, CONSTRAINT "PK_be5fda3aac270b134ff9c21cdee" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "vote" ("value" integer NOT NULL, "userId" integer NOT NULL, "postId" integer NOT NULL, CONSTRAINT "PK_16e301aa5efdd994626b2635186" PRIMARY KEY ("userId", "postId"))`);
+        await queryRunner.query(`CREATE TABLE "space" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "spaceName" character varying NOT NULL, "avatar" character varying, "coverPhoto" character varying, "fullSpaceName" character varying, "rules" character varying, "headline" character varying, "about" character varying, CONSTRAINT "UQ_d3a1749188980a055b0bcd4321d" UNIQUE ("spaceName"), CONSTRAINT "PK_094f5ec727fe052956a11623640" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "space_subscription" ("userId" integer NOT NULL, "spaceId" integer NOT NULL, CONSTRAINT "PK_d628d32fd2777438e93174bc72a" PRIMARY KEY ("userId", "spaceId"))`);
+        await queryRunner.query(`CREATE TABLE "comment" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "text" character varying NOT NULL, "creatorType" character varying NOT NULL DEFAULT 'user', "creatorId" integer, "pageCreatorId" integer, "postId" integer NOT NULL, "points" integer NOT NULL DEFAULT '0', CONSTRAINT "PK_0b0e4bbc8415ec426f87f3a88e2" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "comment_vote" ("value" integer NOT NULL, "userId" integer NOT NULL, "commentId" integer NOT NULL, CONSTRAINT "PK_9194f426d41fb9a8abc3aae5114" PRIMARY KEY ("userId", "commentId"))`);
+        await queryRunner.query(`CREATE TABLE "offer_application" ("id" SERIAL NOT NULL, "userId" integer NOT NULL, "offerId" integer NOT NULL, "status" character varying NOT NULL DEFAULT 'applied', CONSTRAINT "PK_d8989a17a7c87cfa5ff63ea84c1" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "offer" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "creatorType" character varying NOT NULL DEFAULT 'user', "creatorId" integer, "pageCreatorId" integer, "spaceId" integer NOT NULL, "title" character varying NOT NULL, "workplace" character varying, "address" character varying, "recruiting" boolean NOT NULL DEFAULT false, "employmentType" character varying, "salaryRange" character varying, "department" character varying, "requirements" character varying, "benefits" character varying, "description" character varying, "photo" character varying, CONSTRAINT "PK_57c6ae1abe49201919ef68de900" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "tag" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_8e4052373c579afc1471f526760" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "conversation" ("id" SERIAL NOT NULL, "participants" integer array NOT NULL, "firestoreCollectionId" character varying NOT NULL, CONSTRAINT "PK_864528ec4274360a40f66c29845" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "page" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "pageName" character varying NOT NULL, "email" character varying, "avatar" character varying, "coverPhoto" character varying, "fullPageName" character varying, "headline" character varying, "address" character varying, "about" character varying, CONSTRAINT "UQ_37f114be85015bdfea6ecfefe6d" UNIQUE ("pageName"), CONSTRAINT "UQ_add9b61d89ec1480843a61c924d" UNIQUE ("email"), CONSTRAINT "PK_742f4117e065c5b6ad21b37ba1f" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "page_follow" ("userId" integer NOT NULL, "pageId" integer NOT NULL, CONSTRAINT "PK_ac8f7df2a892662f4edf458ca33" PRIMARY KEY ("userId", "pageId"))`);
+        await queryRunner.query(`CREATE TABLE "user_follow" ("followingUserId" integer NOT NULL, "followedUserId" integer NOT NULL, CONSTRAINT "PK_bdb4b69fec91b1b2deb7df00b5e" PRIMARY KEY ("followingUserId", "followedUserId"))`);
+        await queryRunner.query(`CREATE TABLE "education_item" ("id" SERIAL NOT NULL, "school" character varying NOT NULL, "status" character varying, "startDate" TIMESTAMP WITH TIME ZONE, "endDate" TIMESTAMP WITH TIME ZONE, "userId" integer, "photo" character varying, CONSTRAINT "PK_115272e55085398f5a282496bb8" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "experience" ("id" SERIAL NOT NULL, "title" character varying NOT NULL, "workplace" character varying, "startDate" TIMESTAMP WITH TIME ZONE, "endDate" TIMESTAMP WITH TIME ZONE, "userId" integer, "photo" character varying, CONSTRAINT "PK_5e8d5a534100e1b17ee2efa429a" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "qualification" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "issuingOrganisation" character varying NOT NULL, "issuanceDate" TIMESTAMP WITH TIME ZONE, "expire" boolean NOT NULL, "expirationDate" TIMESTAMP WITH TIME ZONE, "credentialID" character varying, "credentialURL" character varying, "userId" integer, "photo" character varying, CONSTRAINT "PK_c8244868552c4364a5264440a66" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "cv" ("id" SERIAL NOT NULL, "filename" character varying NOT NULL, "key" character varying NOT NULL, "userId" integer, CONSTRAINT "PK_4ddf7891daf83c3506efa503bb8" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "post_tags_tag" ("postId" integer NOT NULL, "tagId" integer NOT NULL, CONSTRAINT "PK_e9b7b8e6a07bdccb6a954171676" PRIMARY KEY ("postId", "tagId"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_b651178cc41334544a7a9601c4" ON "post_tags_tag" ("postId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_41e7626b9cc03c5c65812ae55e" ON "post_tags_tag" ("tagId") `);
+        await queryRunner.query(`CREATE TABLE "space_mods_user" ("spaceId" integer NOT NULL, "userId" integer NOT NULL, CONSTRAINT "PK_4768be7da937c7ee02c260fb761" PRIMARY KEY ("spaceId", "userId"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_6fac656f12453c24f08855fbef" ON "space_mods_user" ("spaceId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_2172d469a5e9c5e4397bcb94ff" ON "space_mods_user" ("userId") `);
+        await queryRunner.query(`CREATE TABLE "page_owners_user" ("pageId" integer NOT NULL, "userId" integer NOT NULL, CONSTRAINT "PK_2b7f0419bfbb8f0550592d2cf37" PRIMARY KEY ("pageId", "userId"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_1c5a8df532d6c129c4f1642b2f" ON "page_owners_user" ("pageId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_5bd7deaf0c8e15ea861d15efc3" ON "page_owners_user" ("userId") `);
+        await queryRunner.query(`ALTER TABLE "post" ADD CONSTRAINT "FK_9e91e6a24261b66f53971d3f96b" FOREIGN KEY ("creatorId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "post" ADD CONSTRAINT "FK_605fe7290cfa226a4d444c05ca4" FOREIGN KEY ("pageCreatorId") REFERENCES "page"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "post" ADD CONSTRAINT "FK_899a1931431768b2800f695ac60" FOREIGN KEY ("spaceId") REFERENCES "space"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "vote" ADD CONSTRAINT "FK_f5de237a438d298031d11a57c3b" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "vote" ADD CONSTRAINT "FK_43cc1af57676ac1b7ec774bd10f" FOREIGN KEY ("postId") REFERENCES "post"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "space_subscription" ADD CONSTRAINT "FK_9f89ed79bb85a199306ce7e3ae1" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "space_subscription" ADD CONSTRAINT "FK_4c2cf829c698bede8b9c8608f10" FOREIGN KEY ("spaceId") REFERENCES "space"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "comment" ADD CONSTRAINT "FK_b6bf60ecb9f6c398e349adff52f" FOREIGN KEY ("creatorId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "comment" ADD CONSTRAINT "FK_37de0ca7e7c8dd9f6a3e1f2b6d3" FOREIGN KEY ("pageCreatorId") REFERENCES "page"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "comment" ADD CONSTRAINT "FK_94a85bb16d24033a2afdd5df060" FOREIGN KEY ("postId") REFERENCES "post"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "comment_vote" ADD CONSTRAINT "FK_ade7498b89296b9fb63bcd8dbdd" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "comment_vote" ADD CONSTRAINT "FK_5d77d92a6925ae3fc8da14e1257" FOREIGN KEY ("commentId") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "offer_application" ADD CONSTRAINT "FK_dcfd5b26f80494128baf7bb7578" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "offer_application" ADD CONSTRAINT "FK_6cb6ed00606a2fb71c05fb3c871" FOREIGN KEY ("offerId") REFERENCES "offer"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "offer" ADD CONSTRAINT "FK_cd84aed04fbd70e9ad48139c727" FOREIGN KEY ("creatorId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "offer" ADD CONSTRAINT "FK_f4621bc66549eda711a0b7c6558" FOREIGN KEY ("pageCreatorId") REFERENCES "page"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "offer" ADD CONSTRAINT "FK_69bbcc303da6f7da97744be788a" FOREIGN KEY ("spaceId") REFERENCES "space"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "page_follow" ADD CONSTRAINT "FK_732300fd551f8b08e267018ed99" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "page_follow" ADD CONSTRAINT "FK_b0cd715ee8609422e661e0c43fc" FOREIGN KEY ("pageId") REFERENCES "page"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "user_follow" ADD CONSTRAINT "FK_90ab1c414dac6701f4c126fb736" FOREIGN KEY ("followingUserId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "user_follow" ADD CONSTRAINT "FK_4e493e20c9c272183e73da57ddf" FOREIGN KEY ("followedUserId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "education_item" ADD CONSTRAINT "FK_1dd0c4d5f3e2500b08c3d137b29" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "experience" ADD CONSTRAINT "FK_cbfb1d1219454c9b45f1b3c4274" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "qualification" ADD CONSTRAINT "FK_6550f632c00a2739a1dad0381c1" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "cv" ADD CONSTRAINT "FK_e4b7330e64fd0ecce86720e62f9" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "post_tags_tag" ADD CONSTRAINT "FK_b651178cc41334544a7a9601c45" FOREIGN KEY ("postId") REFERENCES "post"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "post_tags_tag" ADD CONSTRAINT "FK_41e7626b9cc03c5c65812ae55e8" FOREIGN KEY ("tagId") REFERENCES "tag"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "space_mods_user" ADD CONSTRAINT "FK_6fac656f12453c24f08855fbefc" FOREIGN KEY ("spaceId") REFERENCES "space"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "space_mods_user" ADD CONSTRAINT "FK_2172d469a5e9c5e4397bcb94ff2" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "page_owners_user" ADD CONSTRAINT "FK_1c5a8df532d6c129c4f1642b2ff" FOREIGN KEY ("pageId") REFERENCES "page"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "page_owners_user" ADD CONSTRAINT "FK_5bd7deaf0c8e15ea861d15efc36" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "page_owners_user" DROP CONSTRAINT "FK_5bd7deaf0c8e15ea861d15efc36"`);
+        await queryRunner.query(`ALTER TABLE "page_owners_user" DROP CONSTRAINT "FK_1c5a8df532d6c129c4f1642b2ff"`);
+        await queryRunner.query(`ALTER TABLE "space_mods_user" DROP CONSTRAINT "FK_2172d469a5e9c5e4397bcb94ff2"`);
+        await queryRunner.query(`ALTER TABLE "space_mods_user" DROP CONSTRAINT "FK_6fac656f12453c24f08855fbefc"`);
+        await queryRunner.query(`ALTER TABLE "post_tags_tag" DROP CONSTRAINT "FK_41e7626b9cc03c5c65812ae55e8"`);
+        await queryRunner.query(`ALTER TABLE "post_tags_tag" DROP CONSTRAINT "FK_b651178cc41334544a7a9601c45"`);
+        await queryRunner.query(`ALTER TABLE "cv" DROP CONSTRAINT "FK_e4b7330e64fd0ecce86720e62f9"`);
+        await queryRunner.query(`ALTER TABLE "qualification" DROP CONSTRAINT "FK_6550f632c00a2739a1dad0381c1"`);
+        await queryRunner.query(`ALTER TABLE "experience" DROP CONSTRAINT "FK_cbfb1d1219454c9b45f1b3c4274"`);
+        await queryRunner.query(`ALTER TABLE "education_item" DROP CONSTRAINT "FK_1dd0c4d5f3e2500b08c3d137b29"`);
+        await queryRunner.query(`ALTER TABLE "user_follow" DROP CONSTRAINT "FK_4e493e20c9c272183e73da57ddf"`);
+        await queryRunner.query(`ALTER TABLE "user_follow" DROP CONSTRAINT "FK_90ab1c414dac6701f4c126fb736"`);
+        await queryRunner.query(`ALTER TABLE "page_follow" DROP CONSTRAINT "FK_b0cd715ee8609422e661e0c43fc"`);
+        await queryRunner.query(`ALTER TABLE "page_follow" DROP CONSTRAINT "FK_732300fd551f8b08e267018ed99"`);
+        await queryRunner.query(`ALTER TABLE "offer" DROP CONSTRAINT "FK_69bbcc303da6f7da97744be788a"`);
+        await queryRunner.query(`ALTER TABLE "offer" DROP CONSTRAINT "FK_f4621bc66549eda711a0b7c6558"`);
+        await queryRunner.query(`ALTER TABLE "offer" DROP CONSTRAINT "FK_cd84aed04fbd70e9ad48139c727"`);
+        await queryRunner.query(`ALTER TABLE "offer_application" DROP CONSTRAINT "FK_6cb6ed00606a2fb71c05fb3c871"`);
+        await queryRunner.query(`ALTER TABLE "offer_application" DROP CONSTRAINT "FK_dcfd5b26f80494128baf7bb7578"`);
+        await queryRunner.query(`ALTER TABLE "comment_vote" DROP CONSTRAINT "FK_5d77d92a6925ae3fc8da14e1257"`);
+        await queryRunner.query(`ALTER TABLE "comment_vote" DROP CONSTRAINT "FK_ade7498b89296b9fb63bcd8dbdd"`);
+        await queryRunner.query(`ALTER TABLE "comment" DROP CONSTRAINT "FK_94a85bb16d24033a2afdd5df060"`);
+        await queryRunner.query(`ALTER TABLE "comment" DROP CONSTRAINT "FK_37de0ca7e7c8dd9f6a3e1f2b6d3"`);
+        await queryRunner.query(`ALTER TABLE "comment" DROP CONSTRAINT "FK_b6bf60ecb9f6c398e349adff52f"`);
+        await queryRunner.query(`ALTER TABLE "space_subscription" DROP CONSTRAINT "FK_4c2cf829c698bede8b9c8608f10"`);
+        await queryRunner.query(`ALTER TABLE "space_subscription" DROP CONSTRAINT "FK_9f89ed79bb85a199306ce7e3ae1"`);
+        await queryRunner.query(`ALTER TABLE "vote" DROP CONSTRAINT "FK_43cc1af57676ac1b7ec774bd10f"`);
+        await queryRunner.query(`ALTER TABLE "vote" DROP CONSTRAINT "FK_f5de237a438d298031d11a57c3b"`);
+        await queryRunner.query(`ALTER TABLE "post" DROP CONSTRAINT "FK_899a1931431768b2800f695ac60"`);
+        await queryRunner.query(`ALTER TABLE "post" DROP CONSTRAINT "FK_605fe7290cfa226a4d444c05ca4"`);
+        await queryRunner.query(`ALTER TABLE "post" DROP CONSTRAINT "FK_9e91e6a24261b66f53971d3f96b"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_5bd7deaf0c8e15ea861d15efc3"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_1c5a8df532d6c129c4f1642b2f"`);
+        await queryRunner.query(`DROP TABLE "page_owners_user"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_2172d469a5e9c5e4397bcb94ff"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_6fac656f12453c24f08855fbef"`);
+        await queryRunner.query(`DROP TABLE "space_mods_user"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_41e7626b9cc03c5c65812ae55e"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_b651178cc41334544a7a9601c4"`);
+        await queryRunner.query(`DROP TABLE "post_tags_tag"`);
+        await queryRunner.query(`DROP TABLE "cv"`);
+        await queryRunner.query(`DROP TABLE "qualification"`);
+        await queryRunner.query(`DROP TABLE "experience"`);
+        await queryRunner.query(`DROP TABLE "education_item"`);
+        await queryRunner.query(`DROP TABLE "user_follow"`);
+        await queryRunner.query(`DROP TABLE "page_follow"`);
+        await queryRunner.query(`DROP TABLE "page"`);
+        await queryRunner.query(`DROP TABLE "conversation"`);
+        await queryRunner.query(`DROP TABLE "tag"`);
+        await queryRunner.query(`DROP TABLE "offer"`);
+        await queryRunner.query(`DROP TABLE "offer_application"`);
+        await queryRunner.query(`DROP TABLE "comment_vote"`);
+        await queryRunner.query(`DROP TABLE "comment"`);
+        await queryRunner.query(`DROP TABLE "space_subscription"`);
+        await queryRunner.query(`DROP TABLE "space"`);
+        await queryRunner.query(`DROP TABLE "vote"`);
+        await queryRunner.query(`DROP TABLE "post"`);
+        await queryRunner.query(`DROP TABLE "user"`);
+    }
+
+}

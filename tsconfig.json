@@ -1,0 +1,119 @@
+{
+  "ts-node": {
+    "swc": true,
+    "require": [
+      "reflect-metadata",
+      "tsconfig-paths/register",
+      "dotenv-safe/config"
+    ]
+  },
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": [
+      "ES2022",
+      "ESNext"
+    ],
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@entities": [
+        "./src/entities"
+      ],
+      "@entities/*": [
+        "./src/entities/*"
+      ],
+      "@collections": [
+        "./src/collections"
+      ],
+      "@collections/*": [
+        "./src/collections/*"
+      ],
+      "@configs": [
+        "./src/configs"
+      ],
+      "@configs/*": [
+        "./src/configs/*"
+      ],
+      "@graphql-types": [
+        "./src/graphql-types"
+      ],
+      "@graphql-types/*": [
+        "./src/graphql-types/*"
+      ],
+      "@resolvers": [
+        "./src/resolvers"
+      ],
+      "@resolvers/*": [
+        "./src/resolvers/*"
+      ],
+      "@loaders": [
+        "./src/loaders"
+      ],
+      "@loaders/*": [
+        "./src/loaders/*"
+      ],
+      "@middlewares": [
+        "./src/middlewares"
+      ],
+      "@middlewares/*": [
+        "./src/middlewares/*"
+      ],
+      "@migrations": [
+        "./src/migrations"
+      ],
+      "@migrations/*": [
+        "./src/migrations/*"
+      ],
+      "@utils": [
+        "./src/utils"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@constants": [
+        "./src/constants"
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
+      "@types": [
+        "./src/types"
+      ],
+      "@types/*": [
+        "./src/types/*"
+      ],
+      "@src": [
+        "./src"
+      ],
+      "@src/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "env.d.ts",
+    "./src/**/*.tsx",
+    "./src/**/*.ts"
+  ]
+}
